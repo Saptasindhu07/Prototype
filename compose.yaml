@@ -1,0 +1,28 @@
+name: research-similarity
+
+services:
+  mongodb:
+    image: mongo:8.0
+    ports:
+      - "127.0.0.1:27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USERNAME:?Run npm run setup first}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD:?Run npm run setup first}
+    volumes:
+      - mongodb_data:/data/db
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - >-
+          mongosh --quiet --eval
+          'const connection = new Mongo("mongodb://127.0.0.1:27017/admin");
+          const admin = connection.getDB("admin");
+          admin.auth(process.env.MONGO_INITDB_ROOT_USERNAME, process.env.MONGO_INITDB_ROOT_PASSWORD);
+          quit(admin.runCommand({ ping: 1 }).ok === 1 ? 0 : 1);'
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 15s
+
+volumes:
+  mongodb_data:
