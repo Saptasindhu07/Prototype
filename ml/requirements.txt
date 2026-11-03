@@ -1,0 +1,4 @@
+# Only the snapshot command needs these. Offline baseline/evaluation use stdlib.
+pymongo==4.19.0
+dnspython==2.9.0
+python-dotenv==1.2.4

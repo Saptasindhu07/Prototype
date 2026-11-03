@@ -3,18 +3,33 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "workspaces": ["client", "server"],
-  "engines": { "node": ">=24" },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "engines": {
+    "node": ">=24"
+  },
   "scripts": {
     "setup": "node scripts/setup-env.js",
-    "dev": "concurrently --kill-others -n api,web \"npm run dev --workspace server\" \"npm run dev --workspace client\"",
-    "dev:server": "npm run dev --workspace server",
-    "dev:client": "npm run dev --workspace client",
-    "build": "npm run build --workspace client",
-    "start": "npm run start --workspace server",
+    "dev": "concurrently --kill-others -n api,web \"npm run dev --workspace @research-atlas/api\" \"npm run dev --workspace @research-atlas/web\"",
+    "dev:server": "npm run dev --workspace @research-atlas/api",
+    "dev:client": "npm run dev --workspace @research-atlas/web",
+    "build": "npm run build --workspace @research-atlas/web",
+    "start": "npm run start --workspace @research-atlas/api",
     "db:up": "docker compose up -d --wait",
     "db:down": "docker compose down",
-    "db:check": "npm run db:check --workspace server"
+    "db:check": "npm run db:check --workspace @research-atlas/api",
+    "db:indexes": "npm run db:indexes --workspace @research-atlas/api",
+    "test:models": "npm run test:models --workspace @research-atlas/api",
+    "test:api": "npm run test:api --workspace @research-atlas/api",
+    "test:otago": "node --test --test-isolation=none apps/api/tests/otago-import.test.js apps/api/tests/otago-match-authors.test.js apps/api/tests/otago-profiles.test.mjs apps/api/tests/otago-identity-review.test.js",
+    "db:import:otago": "node apps/api/scripts/import-otago.mjs",
+    "db:match:otago": "node apps/api/scripts/otago-match-authors.mjs",
+    "test": "node scripts/test-unit.mjs",
+    "test:ml": "python -m unittest discover -s ml/tests -v"
   },
-  "devDependencies": { "concurrently": "^9.2.1" }
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
 }

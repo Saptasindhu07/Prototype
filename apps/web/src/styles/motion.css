@@ -1,0 +1,55 @@
+body { background: var(--base); }
+.app-shell { isolation: isolate; }
+.ambient-background { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; background: var(--base); }
+.ambient-flow { position: absolute; inset: -20%; will-change: transform; }
+.ambient-flow-one { background: radial-gradient(ellipse at 20% 20%, var(--glow-blue), transparent 58%), radial-gradient(ellipse at 84% 12%, var(--glow-violet), transparent 57%), radial-gradient(ellipse at 65% 88%, var(--glow-teal), transparent 58%); animation: atlas-water-one 44s ease-in-out infinite alternate; }
+.ambient-flow-two { opacity: .45; background: radial-gradient(ellipse at 80% 32%, var(--glow-blue), transparent 46%), radial-gradient(ellipse at 28% 70%, var(--glow-teal), transparent 54%); animation: atlas-water-two 61s ease-in-out infinite alternate; }
+.ambient-pointer { position: absolute; left: -380px; top: -280px; width: 760px; height: 560px; border-radius: 50%; background: radial-gradient(ellipse, light-dark(#ffffff59, #9db8ed13), transparent 68%); opacity: 0; transition: opacity 1800ms ease; will-change: transform; }
+.ambient-background[data-paused=true] .ambient-flow { animation-play-state: paused; }
+@keyframes atlas-water-one { from { transform: translate3d(-2%, -1%, 0) rotate(-3deg) scale(1.02); } 50% { transform: translate3d(2%, 2%, 0) rotate(0deg) scale(1.06); } to { transform: translate3d(5%, -2%, 0) rotate(3deg) scale(1.03); } }
+@keyframes atlas-water-two { from { transform: translate3d(4%, 3%, 0) rotate(4deg) scale(1.06); } to { transform: translate3d(-5%, -3%, 0) rotate(-4deg) scale(1.01); } }
+.motion-layer { position: fixed; inset: 0; width: 100%; height: 100%; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; background: transparent; color: var(--ink); overflow: hidden; pointer-events: none; z-index: 100; }
+.motion-layer::backdrop { background: transparent; pointer-events: none; }
+.motion-title { position: absolute; margin: 0; padding: 0; letter-spacing: -.35px; overflow-wrap: anywhere; text-align: left; pointer-events: none; }
+.motion-paper { position: absolute; top: 0; left: 0; width: 28px; height: 34px; border: 1px solid var(--line-strong); border-radius: 5px 9px 5px 5px; background: var(--panel); box-shadow: 0 5px 18px var(--shadow-hover); }
+.motion-paper::before { content: ''; position: absolute; right: 0; top: 0; border-left: 8px solid var(--soft); border-top: 8px solid var(--line-strong); border-radius: 0 7px 0 3px; }
+.motion-paper::after { content: ''; position: absolute; left: 6px; right: 6px; top: 13px; height: 12px; background: repeating-linear-gradient(to bottom, var(--accent) 0 1px, transparent 1px 5px); opacity: .5; }
+.motion-avatar { position: absolute; top: 0; left: 0; width: 36px; height: 36px; display: grid; place-items: center; border: 1px solid var(--line-strong); border-radius: 50%; background: var(--panel); color: var(--accent); box-shadow: 0 5px 18px var(--shadow-hover); font: 500 12px/1 Inter, 'Segoe UI', sans-serif; }
+.motion-card-ghost { overflow: hidden; pointer-events: none; }
+.nav-count { animation: atlas-count-in 480ms var(--ease); }
+@keyframes atlas-count-in { from { opacity: .4; transform: translateY(3px) scale(.9); } to { opacity: 1; transform: translateY(0) scale(1); } }
+.search-bar { position: relative; }
+.search-signal { position: absolute; inset: -1px; overflow: hidden; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity 600ms var(--ease); }
+.search-signal > span { position: absolute; left: -40%; bottom: 0; width: 40%; height: 2px; background: linear-gradient(90deg, transparent, var(--accent), transparent); }
+.search-bar[data-loading=true] .search-signal { opacity: .85; }
+.search-bar[data-loading=true] .search-signal > span { animation: atlas-search-sweep 1900ms ease-in-out infinite; }
+@keyframes atlas-search-sweep { from { transform: translateX(0); } to { transform: translateX(350%); } }
+
+.motion-list { overflow-anchor: none; }
+.motion-list > * { flex-shrink: 0; }
+.motion-list[data-reflow=true] { overflow: clip; overflow-clip-margin: 5px; }
+.motion-list > .research-card { animation: none; transition: opacity 380ms var(--ease), border-color var(--motion) var(--ease), box-shadow var(--motion) var(--ease); }
+.motion-list[data-loading=true] > .research-card { opacity: .48; }
+.research-dialog.motion-linked { --motion-dismiss: 540ms; animation: none; margin-block: 32px auto; transform-origin: top left; }
+.research-dialog.motion-linked[data-loading=true] .detail-title { opacity: 0; }
+.research-dialog.motion-linked .detail-title { animation: none; }
+.research-dialog.motion-linked.is-closing { animation: atlas-dialog-out var(--motion-dismiss) var(--ease) forwards; }
+.research-dialog.motion-linked.is-closing[data-return=true] { animation-name: atlas-return-panel; }
+@keyframes atlas-return-panel { to { opacity: 0; transform: var(--return-transform); } }
+.research-dialog.motion-linked::backdrop { animation-duration: 760ms; }
+.research-dialog.motion-linked.is-closing::backdrop { animation-duration: var(--motion-dismiss); }
+.compare-avatars { display: flex; flex-shrink: 0; padding-left: 0; }
+.compare-avatar { display: grid; place-items: center; width: 36px; height: 36px; border: 2px solid var(--panel); border-radius: 50%; background: var(--soft); color: var(--accent); font-size: 11px; font-weight: 500; box-shadow: 0 0 0 1px var(--line); }
+.compare-avatar + .compare-avatar { margin-left: -10px; }
+.comparison-person-identity { display: flex; align-items: center; gap: 11px; margin-bottom: 13px; }
+.comparison-person-identity h3 { font-size: 18px; line-height: 1.4; font-weight: 600; }
+.comparison-person-identity .avatar { width: 38px; height: 38px; border-radius: 50%; }
+.compare-tray > div:first-child { flex: 1; }
+.compare-names { max-width: 100%; }
+@media (max-width: 640px) { .compare-avatars { max-width: 88px; } .compare-tray > div:first-child > div:last-child { flex: 1; } .compare-names { max-width: 210px; } .research-dialog.motion-linked { margin-block-start: 12px; } }
+@media (prefers-reduced-motion: reduce) {
+  .ambient-flow, .search-signal > span, .nav-count { animation: none !important; }
+  .ambient-pointer, .motion-layer { display: none !important; }
+  .ambient-flow { will-change: auto; }
+  .search-bar[data-loading=true] .search-signal { border: 1px solid var(--accent); }
+}

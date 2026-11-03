@@ -8,3 +8,15 @@ coverage/
 .DS_Store
 Thumbs.db
 .vscode/
+work/mongodb/
+work/otago/
+work/ml/
+work/ml-tmp/
+work/ui-qa/
+work/refactor/
+tmp/
+ml/.venv/
+ml/**/__pycache__/
+ml/**/*.egg-info/
+.ipynb_checkpoints/
+.virtual_documents/

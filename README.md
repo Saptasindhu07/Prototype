@@ -1,83 +1,77 @@
-# Research Similarity Finder
+# Research Atlas
 
-MERN project foundation. Domain schemas and application features will be designed next.
+University of Otago research discovery prototype with publication search,
+evidence-based neural recommendations, and an independent ML evaluation workflow.
 
-## Structure
+## Repository
 
 ```text
-prototype/
-  client/                      React view layer (Vite)
-    src/
-      assets/
-      components/
-      hooks/
-      pages/
-      services/                Frontend API clients
-      styles/
-      App.jsx
-      main.jsx
-  server/
-    scripts/check-db.js         Connection and ping check
-    src/
-      config/                  Environment and MongoDB connection
-      controllers/             HTTP request/response handlers
-      middlewares/             Shared request/error handling
-      models/                  Reserved for agreed Mongoose schemas
-      routes/                  Express routes
-      services/                Business logic and future ranking engine
-      utils/
-      app.js                   Express application
-      server.js                Startup and shutdown
-  scripts/setup-env.js
-  .env.example
-  compose.yaml
-  package.json
+apps/web/               React + Vite application, features, and browser tests
+apps/api/               Express routes, services, schemas, data tools, and tests
+packages/search/        Pure lexical search rules shared by both applications
+ml/research_ml/         Corpus preparation, BM25 baseline, and ranking metrics
+ml/notebooks/           Interactive learning and experiments
+ml/tests/               Offline benchmark and neural-service tests
+ml/*.py                 Training, evaluation, indexing, inference, and tracking
+scripts/               Development, launch, and verification commands
+docs/                  Architecture, frontend, API, data, and ML documentation
+output/pdf/            Generated prototype documentation
+work/                  Local runtime data, model artifacts, logs, and QA output
 ```
 
-MVC mapping: Mongoose models are the model layer, Express controllers handle requests, and React is the view layer. Routes connect endpoints to controllers; services hold business logic outside controllers.
+JavaScript applications use npm workspaces. Python stays independent to preserve
+the existing environment and saved model paths. Runtime datasets and models are
+excluded from version control.
 
-## Requirements
+## Setup
 
-- Node.js 24 or newer and npm.
-- Docker Desktop running with its Linux container engine for local MongoDB, or an existing MongoDB connection URI.
+Use Node.js 24 or newer and a local MongoDB instance. The ML environment uses
+Python 3.14.6 with CPU PyTorch; versions are in `ml/requirements-neural.txt`.
 
-## Local setup
-
-Run these commands from `prototype`:
-
-```sh
-npm install
+```powershell
+npm ci
 npm run setup
-npm run db:up
 npm run db:check
 npm run dev
 ```
 
-On Windows PowerShell, use `npm.cmd` if the execution policy blocks `npm.ps1`.
+Configure MongoDB in `.env` before starting the API; never commit this file.
+Default ports: web 5173, API 5000, inference 8100. The current demo uses web port 5174.
 
-- Web app: http://127.0.0.1:5173
-- API health: http://127.0.0.1:5000/api/health
-- MongoDB target database: `research_similarity`
+## Neural recommendations
 
-`npm run setup` creates an ignored root `.env` with a random local password. It never overwrites an existing `.env`. The server reads that root file regardless of the working directory. Vite proxies `/api` to Express; database credentials are not exposed to the browser.
+Paper Trail presents up to three researchers with supporting publications, using
+a verified index of 7,283 papers. It describes topic fit, not supervision availability.
+With MongoDB running, enable the verified model and API:
 
-The Compose MongoDB service is bound only to `127.0.0.1` and persists data in a Docker volume. Its bootstrap account is for local development. Use a database-scoped application account when configuring a hosted deployment. MongoDB bootstrap credentials apply only when the volume is first initialized; changing `.env` does not change an existing database user's password. Keep the matching `.env` when reusing that volume.
+```powershell
+./scripts/start-neural.ps1 -ReadyModelPath work/ml/training-runs/bge-full-20261103T093751720940Z-bdc36df2/ready-model.json
+```
 
-For an existing MongoDB installation or Atlas, set `MONGODB_URI` in `.env` and skip `npm run db:up`.
+The launcher enables AI for its child processes without changing `.env`. Ordinary
+API startup defaults to AI disabled. See [operations](docs/neural-service.md).
 
-No domain models, collections, or seed records are created yet. MongoDB materializes the named application database when its first collection/data is created after schema design. `db:check` verifies authentication and a real MongoDB ping without creating application data.
+## Checks
 
-## Commands
+```powershell
+npm test
+npm run build
+& ml/.venv/Scripts/python.exe -m unittest discover -s ml/tests -v
+& ml/.venv/Scripts/python.exe -m unittest discover -s ml/tests/neural -v
+node scripts/verify-neural-live.mjs work/ml/training-runs/bge-full-20261103T093751720940Z-bdc36df2/ready-model.json
+```
 
-| Command | Purpose |
-| --- | --- |
-| `npm run dev` | Run API and React dev server together |
-| `npm run dev:server` | Run only the API with Node watch mode |
-| `npm run dev:client` | Run only Vite |
-| `npm run db:up` | Start MongoDB and wait for its health check |
-| `npm run db:check` | Verify the configured MongoDB connection |
-| `npm run db:down` | Stop/remove the project container while preserving its data volume |
-| `npm run build` | Build the React app |
-| `npm start` | Run only the API without watch mode |
+The default JavaScript suite excludes the opt-in disposable MongoDB test.
+Live recommendation verification uses read-only application database queries.
 
-The API starts listening only after MongoDB connects. `/api/health` returns HTTP 200 when connected and HTTP 503 when disconnected. Unknown routes and request errors return JSON. The React production build is separate from the API and can be served behind a reverse proxy when deployment is planned.
+## Documentation
+
+- [Architecture](docs/architecture.md)
+- [Frontend](docs/frontend.md)
+- [Researcher API](docs/api.md)
+- [Data ingestion](docs/data-ingestion.md)
+- [ML development and Version 2 roadmap](docs/ml-development.md)
+- [Neural service and evaluation](docs/neural-service.md)
+
+Held-out title/content proxy top-1 matching improved from 96.78% to 98.30%.
+This does not measure real-query relevance or professor suitability.

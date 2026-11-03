@@ -1,0 +1,24 @@
+{
+  "name": "@research-atlas/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch src/server.js",
+    "start": "node src/server.js",
+    "db:check": "node scripts/check-db.js",
+    "db:indexes": "node scripts/create-indexes.js",
+    "test:models": "node --test tests/models.test.js",
+    "test:api": "node --test tests/researcher.routes.test.js",
+    "test:discovery": "node --test --test-isolation=none tests/discovery.routes.test.js ../../packages/search/tests/search.test.js",
+    "test:recommendations": "node --test tests/recommendation.test.js",
+    "test:discovery:mongo": "node --test --test-isolation=none tests/discovery.mongo.test.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.3.0",
+    "mongoose": "^9.11.2",
+    "@research-atlas/search": "0.1.0"
+  }
+}
