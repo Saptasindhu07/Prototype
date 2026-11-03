@@ -38,6 +38,19 @@ npm run dev
 Configure MongoDB in `.env` before starting the API; never commit this file.
 Default ports: web 5173, API 5000, inference 8100. The current demo uses web port 5174.
 
+To start all four demo servers with the selected trained model:
+
+```powershell
+npm run master
+```
+
+Keep MongoDB running first. This command checks the database, then starts the web
+app on 5174, API on its configured port (5000 by default), AI inference on 8100,
+and training tracker on 8766. Logs appear together in the terminal. Press Ctrl+C
+to stop all four; if one server exits, the others stop too. The Python environment
+at `ml/.venv` and the local verified model artifacts must already exist. This serves
+the saved model and does not start a new training run or change `.env`.
+
 ## Neural recommendations
 
 Paper Trail presents up to three researchers with supporting publications, using

@@ -11,6 +11,7 @@
     "node": ">=24"
   },
   "scripts": {
+    "master": "node scripts/start-master.mjs",
     "setup": "node scripts/setup-env.js",
     "dev": "concurrently --kill-others -n api,web \"npm run dev --workspace @research-atlas/api\" \"npm run dev --workspace @research-atlas/web\"",
     "dev:server": "npm run dev --workspace @research-atlas/api",
